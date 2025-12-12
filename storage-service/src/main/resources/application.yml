@@ -1,0 +1,46 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: storage-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/test?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: Yy.240812
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: 7ad6e43b-63a7-4d80-9da5-451f63fca5cb
+        username: nacos
+        password: nacos
+        group: DEFAULT_GROUP
+seata:
+  registry:
+    type: nacos
+    nacos:
+      server-addr: localhost:8848
+      namespace: 7ad6e43b-63a7-4d80-9da5-451f63fca5cb
+      group: DEFAULT_GROUP
+      username: nacos
+      password: nacos
+      application: seata-tc-server
+#   配置cluster
+  tx-service-group: seata-demo    # 事务组，根据事务组获取tc服务的cluster名称
+  service:
+    vgroup-mapping:
+      seata-demo: default  # cluster名称
+  data-source-proxy-mode: AT
+mybatis-plus:
+  global-config:
+    db-config:
+      insert-strategy: not_null
+      update-strategy: not_null
+      id-type: auto
+logging:
+  level:
+    org.springframework.cloud.alibaba.seata.web: debug
+    cn.itcast: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS

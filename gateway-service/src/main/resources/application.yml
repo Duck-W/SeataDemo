@@ -1,0 +1,82 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: 7ad6e43b-63a7-4d80-9da5-451f63fca5cb
+        username: nacos
+        password: nacos
+        group: DEFAULT_GROUP
+        enabled: true  # 启用Nacos注册发现
+    gateway:
+      # 确保Swagger相关路径不被网关路由拦截
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      routes:
+        # 根路径重定向到Swagger UI - 由SwaggerResourceConfig处理
+        # Swagger路由 v3
+        - id: account-service-swagger-v3
+          uri: lb://account-service
+          predicates:
+            - Path=/account/v3/api-docs
+          filters:
+            - StripPrefix=1
+        - id: order-service-swagger-v3
+          uri: lb://order-service
+          predicates:
+            - Path=/order/v3/api-docs
+          filters:
+            - StripPrefix=1
+        - id: storage-service-swagger-v3
+          uri: lb://storage-service
+          predicates:
+            - Path=/storage/v3/api-docs
+          filters:
+            - StripPrefix=1
+        - id: auth-service-swagger-v3
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/v3/api-docs
+          filters:
+            - StripPrefix=2
+        # 普通服务路由
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/account/**
+          filters:
+            - StripPrefix=1
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=1
+        - id: storage-service
+          uri: lb://storage-service
+          predicates:
+            - Path=/storage/**
+          filters:
+            - StripPrefix=1
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=2
+        # Swagger UI路由 - 由控制器和WebFluxConfig直接处理，不需要通过网关路由
+          
+# Swagger配置
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: /
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
+    cn.itcast: debug
