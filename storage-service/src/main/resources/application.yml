@@ -32,6 +32,16 @@ seata:
     vgroup-mapping:
       seata-demo: default  # cluster名称
   data-source-proxy-mode: AT
+#   可以将上述集群的配置放到nacos上进行管理⬇，借助nacos实现配置热更新（比如异地容灾时候的集群热切换）
+#  config:
+#    type: nacos
+#    nacos:
+#      server-addr: localhost:8848
+#      namespace: 7ad6e43b-63a7-4d80-9da5-451f63fca5cb
+#      group: DEFAULT_GROUP
+#      data-id: client.properties
+#      username: nacos
+#      password: nacos
 mybatis-plus:
   global-config:
     db-config:
